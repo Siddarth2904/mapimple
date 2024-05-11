@@ -21,7 +21,7 @@ const properties = [
 ];
 
 const labels = {
-  kilometers: "km", 
+  kilometers: "km",
   total: "ports",
   available: "available",
   occupied: "occupied",
@@ -56,20 +56,20 @@ function appendConnector(element, connector) {
   var text = connector.type + ': ';
   var firstCount = true;
 
-  properties.forEach(function(property) {
+  properties.forEach(function (property) {
     if (!current.hasOwnProperty(property.name))
       return;
 
-     const count = current[property.name];
-     if (count == 0)
-       return;
+    const count = current[property.name];
+    if (count == 0)
+      return;
 
-     if (firstCount)
-       firstCount = false;
-     else
-       text += ', ';
+    if (firstCount)
+      firstCount = false;
+    else
+      text += ', ';
 
-     text += count + ' ' + property.label;
+    text += count + ' ' + property.label;
   });
 
   if (firstCount)
@@ -84,15 +84,15 @@ function formatText(location, response) {
   // const chargingStation = dataSources.chargingStation;
   // const chargingConnector = dataSources.chargingConnector;
   const div = document.createElement('div');
-  const a=document.createElement('a');
-  const link=document.createTextNode(location.address.freeformAddress);
-  a.href='https://www.google.com/maps/search/?api=1&query=' + location.position.lat + ',' + location.position.lng;
+  const a = document.createElement('a');
+  const link = document.createTextNode(location.address.freeformAddress);
+  a.href = 'https://www.google.com/maps/search/?api=1&query=' + location.position.lat + ',' + location.position.lng;
   a.appendChild(link);
   div.appendChild(a);
   appendLine(div, 'h3', 'Charging Station');
   appendLine(div, 'span', 'Address: ' + location.address.freeformAddress);
   // appendLine(div, 'span', 'Distance: ' + (location.distance / metersPerKilometer).toFixed(2) + ' ' + labels.kilometers);
-  
+
   // a.target="_blank";
   // // a.innerHTML=location.dataSources.chargingAvailability.url;
   // appendLine(div, 'h3', location.address.freeformAddress);
@@ -102,7 +102,7 @@ function formatText(location, response) {
   // appendLine(div, 'span', 'Total: ' + location.dataSources.chargingAvailability.total + ' ' + labels.total);
 
   // appendLine(div, 'h3', location.address.freeformAddress);
-// div[0].appendChild('<a href="https://www.google.com/maps/dir/?api=1&destination='+location.position.lat+','+location.position.lng+'">Get Directions</a>');
+  // div[0].appendChild('<a href="https://www.google.com/maps/dir/?api=1&destination='+location.position.lat+','+location.position.lng+'">Get Directions</a>');
   // appendLine(div,'a', 'https://www.google.com/maps/search/?api=1&query=' + location.position.lat + ',' + location.position.lng);
 
   console.log(response);
@@ -111,7 +111,7 @@ function formatText(location, response) {
     return div.innerHTML;
   }
 
-  response.connectors.forEach(function(connector) {
+  response.connectors.forEach(function (connector) {
     appendConnector(div, connector);
   });
 
@@ -121,7 +121,7 @@ function formatText(location, response) {
 function addMarker(location) {
   const popup = new tt.Popup({ offset: 10, maxWidth: 'none' })
     .setHTML(formatText(location))
-    .on('open', function(e) {
+    .on('open', function (e) {
       updatePopup(popup, location);
     });
 
@@ -134,7 +134,7 @@ function addMarker(location) {
 }
 
 function clearMarkers() {
-  while(markers.length > 0)
+  while (markers.length > 0)
     markers.pop().remove();
 }
 
@@ -146,7 +146,7 @@ function createMarkers(results) {
 
   const bounds = new tt.LngLatBounds();
 
-  results.results.forEach(function(location) {
+  results.results.forEach(function (location) {
     addMarker(location);
     bounds.extend([location.position.lng, location.position.lat]);
   });
@@ -167,9 +167,9 @@ function findLocation() {
   tt.services.fuzzySearch({ key: application.key, query: queryText })
     .go()
     .then(findStations)
-    .catch(function(error) {
-       alert('Could not find location (' + queryText + '). ' + error.message);
-  });
+    .catch(function (error) {
+      alert('Could not find location (' + queryText + '). ' + error.message);
+    });
 }
 
 function findStations(results) {
@@ -187,16 +187,16 @@ function findStations(results) {
     radius: radius,
     limit: limit
   })
-  .go()
-  .then(createMarkers)
-  .catch(function(error) {
-    alert('Could not find charging stations. ' + error.message);
-  });
+    .go()
+    .then(createMarkers)
+    .catch(function (error) {
+      alert('Could not find charging stations. ' + error.message);
+    });
 }
 
 function getLocation(results) {
-   if (results.results.length > 0)
-     return results.results[0];
+  if (results.results.length > 0)
+    return results.results[0];
 
   alert('Could not find location.');
   return null;
@@ -214,12 +214,12 @@ function init() {
 function updatePopup(popup, location) {
   const id = location.dataSources.chargingAvailability.id;
 
-  chargingAvailability({key: application.key, chargingAvailability: id})
+  chargingAvailability({ key: application.key, chargingAvailability: id })
     .go()
-    .then(function(response) {
+    .then(function (response) {
       popup.setHTML(formatText(location, response));
     })
-    .catch(function(error) {
+    .catch(function (error) {
       popup.setHTML(formatText(location));
     })
 }
